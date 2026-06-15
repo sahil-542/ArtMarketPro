@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtMarket Pro - Premium Art Marketplace</title>
+    <meta name="description" content="Discover and purchase original paintings from talented artists worldwide. Follow your favorite painters and build your art collection.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            --primary: #8B4513;
+            --primary-light: #A0522D;
+            --primary-dark: #654321;
+            --accent: #DAA520;
+            --accent-light: #F4E4BC;
+            --text-primary: #2C1810;
+            --text-secondary: #6B5B73;
+            --bg-primary: #FEFEFE;
+            --bg-secondary: #F8F6F0;
+            --bg-card: #FFFFFF;
+            --border: #E5E1D8;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .art-card {
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+        
+        .art-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(139, 69, 19, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(139, 69, 19, 0.3);
+        }
+        
+        .btn-secondary {
+            background: var(--accent);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #B8860B;
+            transform: translateY(-2px);
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, #F0EDE5 100%);
+            min-height: 100vh;
+        }
+        
+        .floating-element {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .masonry-grid {
+            column-count: 4;
+            column-gap: 1rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .masonry-grid { column-count: 3; }
+        }
+        
+        @media (max-width: 768px) {
+            .masonry-grid { column-count: 2; }
+        }
+        
+        @media (max-width: 480px) {
+            .masonry-grid { column-count: 1; }
+        }
+        
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar {
+            background: var(--bg-card);
+            border-right: 1px solid var(--border);
+            min-height: 100vh;
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 0.5rem;
+        }
+        
+        .nav-link:hover {
+            background: var(--accent-light);
+            color: var(--primary);
+        }
+        
+        .nav-link.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .modal {
+            backdrop-filter: blur(10px);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+        }
+        
+        .notification-badge {
+            background: var(--accent);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            min-width: 1.25rem;
+            height: 1.25rem;
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-weight: 600;
+        }
+        
+        .artist-badge {
+            background: var(--accent);
+            color: var(--text-primary);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        
+        .search-bar {
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.1);
+        }
+        
+        .filter-chip {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .filter-chip:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+        
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .cart-badge {
+            background: #DC2626;
+            color: white;
+            font-size: 0.75rem;
+            min-width: 1.25rem;
+            height: 1.25rem;
+            top: -0.5rem;
+            right: -0.5rem;
+        }
+        
+        .loading-spinner {
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+        
+        .auction-timer {
+            background: linear-gradient(135deg, #DC2626, #B91C1C);
+            color: white;
+            font-weight: 600;
+        }
+        
+        .commission-progress {
+            background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+            height: 0.5rem;
+            border-radius: 0.25rem;
+        }
+        
+        .rating-stars {
+            color: var(--accent);
+        }
+        
+        .verified-badge {
+            background: #10B981;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.125rem 0.375rem;
+            border-radius: 9999px;
+        }
+        
+        .trending-up {
+            color: #10B981;
+        }
+        
+        .trending-down {
+            color: #EF4444;
+        }
+        
+        .admin-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+        }
+        
+        .chart-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+        }
+        
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .toast {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .toast.success {
+            border-left-color: #10B981;
+        }
+        
+        .toast.error {
+            border-left-color: #EF4444;
+        }
+        
+        .toast.warning {
+            border-left-color: #F59E0B;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-display font-bold gradient-text">ArtMarket Pro</h1>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium" data-page="home">Home</a>
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium" data-page="gallery">Gallery</a>
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium" data-page="artists">Artists</a>
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium" data-page="auctions">Auctions</a>
+                    <a href="#" class="nav-link px-3 py-2 text-sm font-medium" data-page="commissions">Commissions</a>
+                </div>
+                
+                <!-- Search Bar -->
+                <div class="hidden lg:flex flex-1 max-w-lg mx-8">
+                    <div class="relative w-full">
+                        <input type="text" 
+                               placeholder="Search artworks, artists, styles..." 
+                               class="search-bar w-full pl-10 pr-4 py-2 text-sm"
+                               id="searchInput">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+                
+                <!-- User Actions -->
+                <div class="flex items-center space-x-4">
+                    <!-- Cart -->
+                    <button class="relative p-2 text-gray-600 hover:text-primary transition-colors" id="cartBtn">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                        <span class="cart-badge absolute rounded-full flex items-center justify-center" id="cartCount">0</span>
+                    </button>
+                    
+                    <!-- Notifications -->
+                    <button class="relative p-2 text-gray-600 hover:text-primary transition-colors" id="notificationBtn">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="notification-badge absolute rounded-full flex items-center justify-center" id="notificationCount">0</span>
+                    </button>
+                    
+                    <!-- User Menu -->
+                    <div class="relative" id="userMenu">
+                        <button class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors" id="userMenuBtn">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white text-sm"></i>
+                            </div>
+                            <span class="hidden md:block text-sm font-medium" id="userName">Sign In</span>
+                        </button>
+                        
+                        <!-- Dropdown Menu -->
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50" id="userDropdown">
+                            <div class="py-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="profile">Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="my-artworks">My Artworks</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="orders">Orders</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="wallet">Wallet</a>
+                                <hr class="my-2">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="settings">Settings</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-action="logout">Sign Out</a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile Menu Button -->
+                    <button class="md:hidden p-2 text-gray-600 hover:text-primary transition-colors" id="mobileMenuBtn">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div class="mobile-menu fixed inset-y-0 left-0 w-64 bg-white shadow-xl z-40 md:hidden" id="mobileMenu">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-display font-bold gradient-text">Menu</h2>
+                    <button id="closeMobileMenu" class="p-2 text-gray-600 hover:text-primary">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-2">
+                    <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-page="home">Home</a>
+                    <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-page="gallery">Gallery</a>
+                    <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-page="artists">Artists</a>
+                    <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-page="auctions">Auctions</a>
+                    <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-page="commissions">Commissions</a>
+                </div>
+                
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <div class="relative mb-4">
+                        <input type="text" 
+                               placeholder="Search..." 
+                               class="search-bar w-full pl-10 pr-4 py-2 text-sm"
+                               id="mobileSearchInput">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Home Page -->
+        <section id="homePage" class="page">
+            <!-- Hero Section -->
+            <section class="hero-section flex items-center justify-center relative overflow-hidden">
+                <div class="absolute inset-0 opacity-10">
+                    <div class="floating-element absolute top-20 left-10 w-32 h-32 bg-primary rounded-full"></div>
+                    <div class="floating-element absolute top-40 right-20 w-24 h-24 bg-accent rounded-full" style="animation-delay: -2s;"></div>
+                    <div class="floating-element absolute bottom-32 left-1/4 w-16 h-16 bg-primary-light rounded-full" style="animation-delay: -4s;"></div>
+                </div>
+                
+                <div class="text-center z-10 max-w-4xl mx-auto px-4">
+                    <h1 class="text-5xl md:text-7xl font-display font-bold mb-6">
+                        Discover Extraordinary
+                        <span class="gradient-text block" id="heroText"></span>
+                    </h1>
+                    <p class="text-xl md:text-2xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        Connect with talented artists, discover unique artworks, and build your collection on the world's premier art marketplace.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <button class="btn-primary px-8 py-3 rounded-lg font-semibold text-lg" data-action="explore">
+                            Explore Artworks
+                        </button>
+                        <button class="btn-secondary px-8 py-3 rounded-lg font-semibold text-lg" data-action="become-artist">
+                            Become an Artist
+                        </button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Featured Artworks -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-display font-bold mb-4">Featured Artworks</h2>
+                        <p class="text-xl text-gray-600">Handpicked masterpieces from our talented artists</p>
+                    </div>
+                    
+                    <div class="splide" id="featuredArtworks">
+                        <div class="splide__track">
+                            <ul class="splide__list" id="featuredArtworksList">
+                                <!-- Featured artworks will be loaded here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Trending Artists -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-display font-bold mb-4">Trending Artists</h2>
+                        <p class="text-xl text-gray-600">Discover the most popular artists this month</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="trendingArtists">
+                        <!-- Trending artists will be loaded here -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Categories -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-display font-bold mb-4">Browse by Category</h2>
+                        <p class="text-xl text-gray-600">Find artworks that match your style</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6" id="categories">
+                        <!-- Categories will be loaded here -->
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Live Auctions -->
+            <section class="py-20 bg-gray-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-display font-bold mb-4">Live Auctions</h2>
+                        <p class="text-xl text-gray-600">Bid on exclusive artworks before they're gone</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="liveAuctions">
+                        <!-- Live auctions will be loaded here -->
+                    </div>
+                </div>
+            </section>
+        </section>
+        
+        <!-- Gallery Page -->
+        <section id="galleryPage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Gallery Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-display font-bold mb-4">Art Gallery</h1>
+                    <p class="text-xl text-gray-600">Discover thousands of original artworks</p>
+                </div>
+                
+                <!-- Filters -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+                    <div class="flex flex-wrap gap-4 mb-6">
+                        <div class="flex-1 min-w-64">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                            <input type="text" 
+                                   placeholder="Search artworks..." 
+                                   class="search-bar w-full px-4 py-2"
+                                   id="gallerySearch">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <select class="search-bar px-4 py-2" id="categoryFilter">
+                                <option value="">All Categories</option>
+                                <option value="abstract">Abstract</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="landscape">Landscape</option>
+                                <option value="still-life">Still Life</option>
+                                <option value="modern">Modern</option>
+                                <option value="contemporary">Contemporary</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+                            <select class="search-bar px-4 py-2" id="priceFilter">
+                                <option value="">Any Price</option>
+                                <option value="0-100">$0 - $100</option>
+                                <option value="100-500">$100 - $500</option>
+                                <option value="500-1000">$500 - $1,000</option>
+                                <option value="1000-5000">$1,000 - $5,000</option>
+                                <option value="5000+">$5,000+</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter Chips -->
+                    <div class="flex flex-wrap gap-2" id="filterChips">
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="oil">Oil Painting</button>
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="acrylic">Acrylic</button>
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="watercolor">Watercolor</button>
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="realism">Realism</button>
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="abstract">Abstract</button>
+                        <button class="filter-chip px-3 py-1 rounded-full text-sm" data-filter="impressionism">Impressionism</button>
+                    </div>
+                </div>
+                
+                <!-- Sort and View Options -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-600">Sort by:</span>
+                        <select class="search-bar px-3 py-1 text-sm" id="sortBy">
+                            <option value="newest">Newest First</option>
+                            <option value="price-low">Price: Low to High</option>
+                            <option value="price-high">Price: High to Low</option>
+                            <option value="popular">Most Popular</option>
+                            <option value="rating">Highest Rated</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center space-x-2">
+                        <button class="p-2 text-gray-600 hover:text-primary transition-colors" data-view="grid" id="gridView">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="p-2 text-gray-600 hover:text-primary transition-colors" data-view="list" id="listView">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Artworks Grid -->
+                <div class="masonry-grid" id="artworksGrid">
+                    <!-- Artworks will be loaded here -->
+                </div>
+                
+                <!-- Load More Button -->
+                <div class="text-center mt-12">
+                    <button class="btn-primary px-8 py-3 rounded-lg font-semibold" id="loadMoreBtn">
+                        Load More Artworks
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Artists Page -->
+        <section id="artistsPage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Artists Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-display font-bold mb-4">Featured Artists</h1>
+                    <p class="text-xl text-gray-600">Discover talented painters from around the world</p>
+                </div>
+                
+                <!-- Artist Filters -->
+                <div class="bg-white rounded-lg border border-gray-200 p-6 mb-8">
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex-1 min-w-64">
+                            <input type="text" 
+                                   placeholder="Search artists..." 
+                                   class="search-bar w-full px-4 py-2"
+                                   id="artistSearch">
+                        </div>
+                        <div>
+                            <select class="search-bar px-4 py-2" id="specializationFilter">
+                                <option value="">All Specializations</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="landscape">Landscape</option>
+                                <option value="abstract">Abstract</option>
+                                <option value="still-life">Still Life</option>
+                            </select>
+                        </div>
+                        <div>
+                            <select class="search-bar px-4 py-2" id="locationFilter">
+                                <option value="">All Locations</option>
+                                <option value="us">United States</option>
+                                <option value="uk">United Kingdom</option>
+                                <option value="eu">Europe</option>
+                                <option value="asia">Asia</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Artists Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="artistsGrid">
+                    <!-- Artists will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Auctions Page -->
+        <section id="auctionsPage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Auctions Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-display font-bold mb-4">Live Auctions</h1>
+                    <p class="text-xl text-gray-600">Bid on exclusive artworks and rare pieces</p>
+                </div>
+                
+                <!-- Auction Tabs -->
+                <div class="border-b border-gray-200 mb-8">
+                    <nav class="-mb-px flex space-x-8">
+                        <button class="auction-tab py-2 px-1 border-b-2 border-primary text-primary font-medium text-sm" data-tab="live">
+                            Live Now
+                        </button>
+                        <button class="auction-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="upcoming">
+                            Upcoming
+                        </button>
+                        <button class="auction-tab py-2 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 font-medium text-sm" data-tab="ended">
+                            Ended
+                        </button>
+                    </nav>
+                </div>
+                
+                <!-- Auctions Content -->
+                <div id="auctionsContent">
+                    <!-- Auctions will be loaded here -->
+                </div>
+            </div>
+        </section>
+        
+        <!-- Commissions Page -->
+        <section id="commissionsPage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Commissions Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-display font-bold mb-4">Commission Artwork</h1>
+                    <p class="text-xl text-gray-600">Work directly with artists to create custom pieces</p>
+                </div>
+                
+                <!-- Commission Process -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-pencil-ruler text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">1. Describe Your Vision</h3>
+                        <p class="text-gray-600">Tell us about your ideal artwork, style, size, and preferences</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-handshake text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">2. Match with Artists</h3>
+                        <p class="text-gray-600">We'll connect you with artists who match your style and budget</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-palette text-white text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold mb-2">3. Receive Your Art</h3>
+                        <p class="text-gray-600">Collaborate with the artist and receive your custom masterpiece</p>
+                    </div>
+                </div>
+                
+                <!-- Commission Request Form -->
+                <div class="bg-white rounded-lg border border-gray-200 p-8 mb-8">
+                    <h2 class="text-2xl font-display font-bold mb-6">Start Your Commission</h2>
+                    
+                    <form id="commissionForm" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Artwork Type</label>
+                                <select class="search-bar w-full px-4 py-2" name="category">
+                                    <option value="">Select Type</option>
+                                    <option value="portrait">Portrait</option>
+                                    <option value="landscape">Landscape</option>
+                                    <option value="abstract">Abstract</option>
+                                    <option value="pet-portrait">Pet Portrait</option>
+                                    <option value="custom">Custom</option>
+                                    <option value="reproduction">Reproduction</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Preferred Medium</label>
+                                <select class="search-bar w-full px-4 py-2" name="medium">
+                                    <option value="">Select Medium</option>
+                                    <option value="oil">Oil</option>
+                                    <option value="acrylic">Acrylic</option>
+                                    <option value="watercolor">Watercolor</option>
+                                    <option value="digital">Digital</option>
+                                    <option value="mixed-media">Mixed Media</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Size</label>
+                            <select class="search-bar w-full px-4 py-2" name="size">
+                                <option value="">Select Size</option>
+                                <option value="small">Small (up to 12x16 inches)</option>
+                                <option value="medium">Medium (16x20 to 24x30 inches)</option>
+                                <option value="large">Large (24x36 to 36x48 inches)</option>
+                                <option value="extra-large">Extra Large (48+ inches)</option>
+                                <option value="custom">Custom Size</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Budget Range (USD)</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <input type="number" placeholder="Min budget" class="search-bar px-4 py-2" name="budgetMin">
+                                    <input type="number" placeholder="Max budget" class="search-bar px-4 py-2" name="budgetMax">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Timeline</label>
+                                <select class="search-bar w-full px-4 py-2" name="timeline">
+                                    <option value="">Select Timeline</option>
+                                    <option value="1-2 weeks">1-2 weeks</option>
+                                    <option value="3-4 weeks">3-4 weeks</option>
+                                    <option value="1-2 months">1-2 months</option>
+                                    <option value="2-3 months">2-3 months</option>
+                                    <option value="flexible">Flexible</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea class="search-bar w-full px-4 py-2 h-32 resize-none" 
+                                      placeholder="Describe your vision, preferred style, colors, subject matter, and any specific requirements..."
+                                      name="description"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Reference Images (Optional)</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                <input type="file" multiple accept="image/*" class="hidden" id="referenceImages" name="referenceImages">
+                                <label for="referenceImages" class="cursor-pointer">
+                                    <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                                    <p class="text-gray-600">Click to upload reference images</p>
+                                    <p class="text-sm text-gray-500">PNG, JPG up to 10MB each</p>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end">
+                            <button type="submit" class="btn-primary px-8 py-3 rounded-lg font-semibold">
+                                Submit Commission Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Available Artists for Commissions -->
+                <div class="bg-white rounded-lg border border-gray-200 p-8">
+                    <h2 class="text-2xl font-display font-bold mb-6">Artists Available for Commissions</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="commissionArtists">
+                        <!-- Commission artists will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Profile Page -->
+        <section id="profilePage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                    <!-- Profile Sidebar -->
+                    <div class="lg:col-span-1">
+                        <div class="bg-white rounded-lg border border-gray-200 p-6 sticky top-24">
+                            <div class="text-center mb-6">
+                                <div class="w-24 h-24 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-2xl"></i>
+                                </div>
+                                <h2 class="text-xl font-semibold" id="profileName">Your Name</h2>
+                                <p class="text-gray-600" id="profileRole">Customer</p>
+                            </div>
+                            
+                            <nav class="space-y-2">
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="dashboard">
+                                    <i class="fas fa-chart-line mr-2"></i>Dashboard
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="artworks">
+                                    <i class="fas fa-palette mr-2"></i>My Artworks
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="orders">
+                                    <i class="fas fa-shopping-bag mr-2"></i>Orders
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="commissions">
+                                    <i class="fas fa-pencil-ruler mr-2"></i>Commissions
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="auctions">
+                                    <i class="fas fa-gavel mr-2"></i>Auctions
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="wallet">
+                                    <i class="fas fa-wallet mr-2"></i>Wallet
+                                </a>
+                                <a href="#" class="block nav-link px-3 py-2 text-sm font-medium" data-section="settings">
+                                    <i class="fas fa-cog mr-2"></i>Settings
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile Content -->
+                    <div class="lg:col-span-3">
+                        <div id="profileContent">
+                            <!-- Profile content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Admin Dashboard -->
+        <section id="adminPage" class="page hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Admin Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-display font-bold mb-4">Admin Dashboard</h1>
+                    <p class="text-xl text-gray-600">Manage the ArtMarket Pro platform</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="adminStats">
+                    <!-- Stats will be loaded here -->
+                </div>
+                
+                <!-- Admin Navigation -->
+                <div class="bg-white rounded-lg border border-gray-200 mb-8">
+                    <nav class="flex border-b border-gray-200">
+                        <button class="admin-tab px-6 py-3 text-sm font-medium border-b-2 border-primary text-primary" data-tab="users">
+                            Users
+                        </button>
+                        <button class="admin-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500" data-tab="artworks">
+                            Artworks
+                        </button>
+                        <button class="admin-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500" data-tab="orders">
+                            Orders
+                        </button>
+                        <button class="admin-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500" data-tab="auctions">
+                            Auctions
+                        </button>
+                        <button class="admin-tab px-6 py-3 text-sm font-medium border-b-2 border-transparent text-gray-500" data-tab="analytics">
+                            Analytics
+                        </button>
+                    </nav>
+                </div>
+                
+                <!-- Admin Content -->
+                <div id="adminContent">
+                    <!-- Admin content will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-2xl font-display font-bold gradient-text mb-4">ArtMarket Pro</h3>
+                    <p class="text-gray-400 mb-4">The world's premier marketplace for original artworks and custom commissions.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">For Artists</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Sell Your Art</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Artist Guidelines</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Pricing Guide</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Success Stories</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">For Buyers</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">How to Buy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Buyer Protection</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Returns Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Art Advisory</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition-colors">Help Center</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 ArtMarket Pro. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div class="modal fixed inset-0 z-50 hidden" id="loginModal">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-md p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-display font-bold">Sign In</h2>
+                    <button class="text-gray-400 hover:text-gray-600" id="closeLoginModal">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" name="email" required class="search-bar w-full px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" name="password" required class="search-bar w-full px-4 py-2">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="rounded border-gray-300">
+                            <span class="ml-2 text-sm text-gray-600">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-primary hover:underline">Forgot password?</a>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">
+                        Sign In
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Don't have an account? 
+                        <button class="text-primary hover:underline font-medium" id="showRegisterModal">Sign up</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal fixed inset-0 z-50 hidden" id="registerModal">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-md p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-display font-bold">Sign Up</h2>
+                    <button class="text-gray-400 hover:text-gray-600" id="closeRegisterModal">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <form id="registerForm" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+                            <input type="text" name="firstName" required class="search-bar w-full px-4 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Last Name</label>
+                            <input type="text" name="lastName" required class="search-bar w-full px-4 py-2">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" name="email" required class="search-bar w-full px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input type="password" name="password" required class="search-bar w-full px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">I want to</label>
+                        <select name="role" class="search-bar w-full px-4 py-2">
+                            <option value="customer">Buy Art</option>
+                            <option value="painter">Sell Art</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" required class="rounded border-gray-300">
+                        <span class="ml-2 text-sm text-gray-600">I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a></span>
+                    </div>
+                    <button type="submit" class="btn-primary w-full py-3 rounded-lg font-semibold">
+                        Sign Up
+                    </button>
+                </form>
+                
+                <div class="mt-6 text-center">
+                    <p class="text-sm text-gray-600">
+                        Already have an account? 
+                        <button class="text-primary hover:underline font-medium" id="showLoginModal">Sign in</button>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Modal -->
+    <div class="modal fixed inset-0 z-50 hidden" id="cartModal">
+        <div class="flex items-center justify-center min-h-screen p-4">
+            <div class="modal-content w-full max-w-lg p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-display font-bold">Shopping Cart</h2>
+                    <button class="text-gray-400 hover:text-gray-600" id="closeCartModal">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div id="cartItems" class="space-y-4 mb-6">
+                    <!-- Cart items will be loaded here -->
+                </div>
+                
+                <div class="border-t pt-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-lg font-semibold">Total:</span>
+                        <span class="text-2xl font-bold text-primary" id="cartTotal">$0.00</span>
+                    </div>
+                    <button class="btn-primary w-full py-3 rounded-lg font-semibold" id="checkoutBtn">
+                        Proceed to Checkout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="fixed top-16 right-4 w-80 max-h-96 bg-white rounded-lg shadow-xl border border-gray-200 z-40 hidden" id="notificationPanel">
+        <div class="p-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold">Notifications</h3>
+        </div>
+        <div class="overflow-y-auto max-h-80" id="notificationList">
+            <!-- Notifications will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="fixed bottom-4 right-4 z-50" id="toastContainer">
+        <!-- Toasts will be inserted here -->
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="loadingOverlay">
+        <div class="bg-white rounded-lg p-8 text-center">
+            <div class="loading-spinner mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="js/app.js"></script>
+</body>
+</html>
