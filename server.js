@@ -189,13 +189,22 @@ app.use((err, req, res, next) => {
 });
 
 // Serve React app in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'client/build')));
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static(path.join(__dirname, 'client/build')));
   
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-  });
-}
+//   app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
+//   });
+// }
+// Serve frontend
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Handle all other frontend routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 // 404 handler
 app.use((req, res) => {
