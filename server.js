@@ -182,20 +182,14 @@ io.on('connection', (socket) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!', 
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  res.status(500).json({
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development'
+      ? err.message
+      : {}
   });
 });
 
-// Serve React app in production
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static(path.join(__dirname, 'client/build')));
-  
-//   app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'client/build', 'index.html'));
-//   });
-// }
 // Serve frontend
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -206,12 +200,8 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// 404 handler
-app.use((req, res) => {
-  res.status(404).json({ message: 'Route not found' });
-});
-
 const PORT = process.env.PORT || 5000;
+
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
